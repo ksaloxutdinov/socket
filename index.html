@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        section {
+            width: 450px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #username-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        #username {
+            height: 25px;
+            padding: 0 10px;
+        }
+
+        #message-box {
+            display: flex;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        #message {
+            width: 80%;
+            padding: 0 10px;
+        }
+
+        button {
+            width: 10%;
+        }
+
+        #chat-box {
+            height: 100%;
+            padding: 5%;
+            background-image: linear-gradient(rgb(255, 182, 193, 0.5), rgb(173, 216, 230, 0.5));
+            border-radius: 20px;
+            margin: 5% 0;
+        }
+
+        #chat {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgb(0, 0, 0, 0.5); 
+            background-image: linear-gradient(lightblue, lightpink); 
+            height: 90%;
+            overflow: hidden;
+            padding: 5%;
+            color: #009696;
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            height: 20px;
+            width: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div id="username-box">
+            <input type="text" id="username" placeholder="username">
+        </div>
+        <div id="chat-box">
+            <div id="chat"></div>
+        </div>
+        <div id="message-box">
+            <input type="text" id="message" placeholder="message">
+            <button onclick="sendMessage()">
+                <img src="./icon/icon.png">
+            </button>
+        </div>
+    </section>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:3000');
+
+        ws.addEventListener('message', (event) => {
+            const chat = document.getElementById('chat');
+            chat.innerHTML += `<p>${event.data}</p>`;
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+        function sendMessage() {
+            const name = document.getElementById('username').value;
+            const message = document.getElementById('message').value;
+            if (name && message) {
+                ws.send(`${name}: ${message}`);
+                document.getElementById('message').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
